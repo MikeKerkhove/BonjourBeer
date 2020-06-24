@@ -1,0 +1,36 @@
+{% extends 'layouts/default.html' %}
+
+{% block content %}
+    
+    <h1>Zone d'administration</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom de la photo</th>
+                <th>Date</th>
+                <th>Lien</th>
+                <th>Proposée par</th>
+                <th>active</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pic in pics %}
+                <tr>
+                    <td>{{ pic.id }}</td>
+                    <td>{{ pic.name }}</td>
+                    <td>{{ pic.date }}</td>
+                    <td>{{ pic.link }}</td>
+                    <td>{{ pic.by }}</td>
+                    <td>{{ pic.active }}</td>
+                    <td>
+                        <a href="#" class="btn btn-outline-primary btn-lg active" role="button" aria-pressed="true">Modifier</a>
+                        <a href="/post/delete/{{ pic.id }}" class="btn btn-outline-danger btn-lg active" role="button" aria-pressed="true">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table> 
+
+{% endblock content %}

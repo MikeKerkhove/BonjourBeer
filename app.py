@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, make_response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/beerdb.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+admin_pass = 'pbkdf2:sha256:150000$QgbX2ojM$0956b0a6ce9f7165f1741ea30f7416b7f6f9056250109b03d4d3b3e51e097ce1'
 db = SQLAlchemy(app)
 
 ### Init DB ###
@@ -37,6 +39,15 @@ def new():
 def about():
     return render_template('pages/about.html')
 
+@app.route('/admin')
+def admin():
+    if request.authorization and request.authorization.username == 'Admin' and check_password_hash(admin_pass, request.authorization.password):
+        flash(u'Vous êtes bien connecté en tant qu\'administrateur', 'success')
+        pics = Pictures.query.all()
+        return render_template('pages/admin.html', pics=pics)
+    
+    return make_response('Erreur dans les identifiants/MDP.', 401, {'WWW-Authenticate' : 'Basic realm="Login requis"'})
+
 @app.errorhandler(404)
 def page_not_found(error):
     flash(u'La page que vous demandez n\'existe pas.', 'danger')
@@ -64,8 +75,11 @@ def update():
         picName = request.form['name']
         picLink = request.form['link']
         picBy = request.form['by']
-        newPic = Pictures(name=picName,link=picLink,by=picBy)
-        db.session.add(newPic)
+        picDate = request.form['date']
+        picValid = request.form['valid']
+        picActive = request.form['active']
+        updatePic = Pictures(name=picName,link=picLink,by=picBy,date=picDate,valid=picValid,active=picActive)
+        db.session.add(updatePic)
         db.session.commit()
         flash(u'La photo a bien été mise à jour.', 'success')
         return redirect("/", code=302)

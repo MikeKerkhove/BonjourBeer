@@ -3,6 +3,21 @@
 {% block content %}
 
     <h1>Bienvenue sur le site 'Bonjour la bière'</h1>
-    <p><a href="/test">Create user Anna</a></p>
+    <br>
+    {% for pic in pics.items %}
+        <article>
+            <h2>{{ pic.name }} du {% print(pic.date.strftime("%d/%m/%Y")) %}</h2>
+            <img src="{{ pic.link }}" alt="{{ pic.name }}">
+            <p>Proposée par {{ pic.by }}</p>
+        </article>
+    {% endfor %}
 
+    <br>
+    {% for page in pics.iter_pages(left_edge=10, right_edge=10, left_current=10, right_current=10) %}
+        {% if page %}
+            <a href="{{ url_for('home', page_num=page) }}">{{ page }}</a>
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
 {% endblock content %}

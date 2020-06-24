@@ -2,6 +2,18 @@
 
 {% block content %}
     
-    <h1>Formulaire de soumission de photos</h1>
+    <h1>Formulaire de proposition de photos</h1>
+    <form action="{{ url_for('create') }}" method="post">
+        <label for="name">Nom de la photo :</label><br>
+        <input type="text" name="name" id="name"><br>
+
+        <label for="link">Lien de la photo :</label><br>
+        <input type="text" name="link" id="link"><br>
+
+        <label for="by">Votre nom :</label><br>
+        <input type="text" name="by" id="by"><br>
+        <br>
+        <input type="submit" value="Soumettre">
+    </form>
 
 {% endblock content %}
